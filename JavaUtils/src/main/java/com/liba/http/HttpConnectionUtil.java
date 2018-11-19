@@ -4,10 +4,16 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import com.liba.entity.Proxys;
 
 public class HttpConnectionUtil {
 	 public String sendPostRequest(String url,Map<String,String> parameters){  
@@ -16,7 +22,8 @@ public class HttpConnectionUtil {
 	        try {
 
 	        URL postUrl = new URL(url);
-
+	        
+	       
 	        // 加入代理start
 
 	        /*Properties systemProperties =System.getProperties();
@@ -48,7 +55,7 @@ public class HttpConnectionUtil {
 	        DataOutputStream out = new DataOutputStream(connection  
 	                .getOutputStream());  
 	        // 正文，正文内容其实跟get的URL中 '? '后的参数字符串一致  
-	        String content = "name=11&pas=";  
+	        String content = "";  
 	        // DataOutputStream.writeBytes将字符串中的16位的unicode字符以8位的字符形式写到流里面  
 	        if(null != parameters && parameters.size()>0){
 	            for(Map.Entry<String,String> entry : parameters.entrySet()){
@@ -72,7 +79,12 @@ public class HttpConnectionUtil {
 	        //获取响应  
 	        //获取请求的资源  
 	        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(),"UTF-8"));  
-	        result =br.readLine();  
+	        result =br.readLine();
+	        StringBuffer sb =new StringBuffer();
+	        while(result != null){
+	        	sb.append(result);
+	        	result=br.readLine();
+	        }
 	        br.close();  
 	        //该干的都干完了,记得把连接断了  
 	        connection.disconnect();  
@@ -83,4 +95,16 @@ public class HttpConnectionUtil {
 	        } 
 	        return result;
 	  }  
+	 public Proxy getProxy(){
+		 
+		 String ip="47.93.18.195";
+         int port=80;
+         //
+         List<Proxys> list =new ArrayList<Proxys>();
+         
+         // 创建代理服务器  
+         InetSocketAddress addr = new InetSocketAddress(ip,port);  
+         Proxy proxy = new Proxy(Proxy.Type.HTTP, addr); // http 代理
+		 return proxy;
+	 }
 }
